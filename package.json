@@ -1,0 +1,28 @@
+{
+  "name": "nodejs-hw",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lkarm67/nodejs-hw.git"
+  },
+  "keywords": [],
+  "author": "Liudmyla Karmeliuk <lkarm67@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lkarm67/nodejs-hw/issues"
+  },
+  "homepage": "https://github.com/lkarm67/nodejs-hw#readme",
+  "description": "",
+  "devDependencies": {
+    "@eslint/js": "^9.38.0",
+    "eslint": "^9.38.0",
+    "globals": "^16.4.0",
+    "nodemon": "^3.1.10"
+  }
+}
