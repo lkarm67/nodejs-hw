@@ -1,8 +1,11 @@
 import express from 'express';
 import cors from 'cors';
-import pino from 'pino-http';
 import 'dotenv/config';
 import helmet from 'helmet';
+import { connectMongoDB } from './db/connectMongoDB.js';
+import { logger } from './middleware/logger.js';
+import { notFoundHandler } from './middleware/notFoundHandler.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
 
@@ -10,22 +13,12 @@ const app = express();
 const PORT = process.env.PORT ?? 3000;
 
 // ========== STANDARD MIDDLEWARE ==========
+app.use(logger);
 app.use(cors()); // дозволяє запити з інших доменів
-app.use(helmet());// захищає HTTP заголовки
+app.use(helmet()); // захищає HTTP заголовки
 app.use(express.json()); // дозволяє приймати JSON у body
-app.use(pino({
-    level: 'info',
-    transport: {
-      target: 'pino-pretty',
-      options: {
-        colorize: true,
-        translateTime: 'HH:MM:ss',
-        ignore: 'pid,hostname',
-        messageFormat: '{req.method} {req.url} {res.statusCode} - {responseTime}ms',
-        hideObject: true,
-      },
-    },
-  })); // логування запитів
+
+      
 
 // ========== ROUTES ==========
 
@@ -54,19 +47,13 @@ app.get('/', (req, res) => {
 
 
 // ========== 404 HANDLER (неіснуючі маршрути) ==========
-app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
-});
+app.use(notFoundHandler);
 
 // ========== ERROR HANDLER ==========
-app.use((err, req, res, next) => {
-  console.error('Error:', err.message);
-  const isProd = process.env.NODE_ENV === 'production';
-  res.status(500).json({
-    message: isProd ? 'Something went wrong, please try again later.'
-      : err.message,
-  });
-});
+app.use(errorHandler);
+
+// ========== START SERVER & CONNECT TO DB ==========
+await connectMongoDB();
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
