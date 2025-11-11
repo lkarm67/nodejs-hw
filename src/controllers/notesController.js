@@ -10,7 +10,7 @@ app.get('/', (req, res) => {
 */
 
 // Отримати список усіх нотаток
-export const getNotes = async (req, res) => {
+export const getAllNotes = async (req, res) => {
   const notes = await Note.find();
   res.status(200).json(notes);
 };
@@ -32,7 +32,7 @@ export const createNote = async (req, res) => {
   const note = await Note.create(req.body);
   res.status(201).json(note);
 };
-
+/*
 export const deleteNote = async (req, res, next) => {
   const { noteId } = req.params;
   const note = await Note.findOneAndDelete({
@@ -44,6 +44,22 @@ export const deleteNote = async (req, res, next) => {
     return;
   }
   res.status(200).json({ message: "Note deleted successfully" });
+};
+*/
+
+export const deleteNote = async (req, res, next) => {
+  try {
+    const { noteId } = req.params;
+    const note = await Note.findOneAndDelete({ _id: noteId });
+
+    if (!note) {
+      return next(createHttpError(404, "Note not found"));
+    }
+
+    res.status(200).json(note); // Повертаємо видалену нотатку
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const updateNote = async (req, res, next) => {
