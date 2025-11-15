@@ -23,4 +23,7 @@ const noteSchema = new Schema(
   }
 );
 
+// Додаємо текстовий індекс: кажемо MongoDB, що по полю title можна робити $text
+noteSchema.index({ title: "text" });
+
 export const Note = model('Note', noteSchema);

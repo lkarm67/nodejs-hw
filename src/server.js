@@ -7,6 +7,7 @@ import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import notesRoutes from './routes/notesRoutes.js';
+import { errors } from 'celebrate';
 
 const app = express();
 
@@ -14,16 +15,13 @@ const app = express();
 const PORT = process.env.PORT ?? 3000;
 
 // ========== STANDARD MIDDLEWARE ==========
-app.use(logger); // 1. Логер першим — бачить усі запити
-app.use(cors()); // дозволяє запити з інших доменів
-app.use(helmet()); // захищає HTTP заголовки
-app.use(express.json()); // дозволяє приймати JSON у body
-app.use(notesRoutes); // Підключаємо маршрути нотаток
-
-      
+app.use(logger);
+app.use(cors());
+app.use(helmet());
+app.use(express.json());
 
 // ========== ROUTES ==========
-
+app.use(notesRoutes);
 
 app.get('/', (req, res) => {
   res.json({
@@ -32,13 +30,16 @@ app.get('/', (req, res) => {
   });
 });
 
-
-// ========== 404 HANDLER (неіснуючі маршрути) ==========
+// ========== 404 HANDLER ==========
 app.use(notFoundHandler);
-// ========== ERROR HANDLER ==========
+
+// ========== CELEBRATE ERRORS ==========
+app.use(errors());  
+
+// ========== CUSTOM ERROR HANDLER ==========
 app.use(errorHandler);
 
-// ========== START SERVER & CONNECT TO DB ==========
+// ========== START SERVER ==========
 await connectMongoDB();
 
 app.listen(PORT, () => {

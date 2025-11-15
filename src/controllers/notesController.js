@@ -1,18 +1,40 @@
 import { Note } from '../models/note.js';
 import createHttpError from 'http-errors';
-/*
-app.get('/', (req, res) => {
-  res.json({
-    message: 'Welcome to Notes API 🚀',
-    availableRoutes: ['/notes', '/notes/:noteId']
-  });
-});
-*/
 
 // Отримати список усіх нотаток
 export const getAllNotes = async (req, res) => {
-  const notes = await Note.find();
-  res.status(200).json(notes);
+  	// Отримуємо пара метри пагінації
+  const { page = 1, perPage = 10, tag, search } = req.query;
+
+  const skip = (page - 1) * perPage;
+
+  // Створюємо базовий запит до колекції
+  const notesQuery = Note.find();
+
+  // Додаємо фільтри за тегом та пошуком
+  if (tag) {
+    notesQuery.where('tag').equals(tag);
+  }
+  if (search) {
+    notesQuery.where('title', { $text: { $search: search } });
+  }
+
+  // Виконуємо одразу два запити паралельно
+  const [totalNotes, notes] = await Promise.all([
+    notesQuery.clone().countDocuments(),
+    notesQuery.skip(skip).limit(perPage),
+  ]);
+	
+	// Обчислюємо загальну кількість «сторінок»
+  const totalPages = Math.ceil(totalNotes / perPage);
+
+  res.status(200).json({
+    page,
+    perPage,
+    totalNotes,
+    totalPages,
+    notes,
+  });
 };
 
 // Отримати одну нотатку за id
@@ -32,20 +54,6 @@ export const createNote = async (req, res) => {
   const note = await Note.create(req.body);
   res.status(201).json(note);
 };
-/*
-export const deleteNote = async (req, res, next) => {
-  const { noteId } = req.params;
-  const note = await Note.findOneAndDelete({
-    _id: noteId,
-  });
-
-  if (!note) {
-    next(createHttpError(404, "Note not found"));
-    return;
-  }
-  res.status(200).json({ message: "Note deleted successfully" });
-};
-*/
 
 export const deleteNote = async (req, res, next) => {
   try {
