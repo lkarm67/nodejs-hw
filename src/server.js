@@ -10,17 +10,15 @@ import notesRoutes from './routes/notesRoutes.js';
 import { errors } from 'celebrate';
 
 const app = express();
-
-// ========== SERVER START ==========
 const PORT = process.env.PORT ?? 3000;
 
-// ========== STANDARD MIDDLEWARE ==========
+// MIDDLEWARE
 app.use(logger);
 app.use(cors());
 app.use(helmet());
 app.use(express.json());
 
-// ========== ROUTES ==========
+// ROUTES
 app.use(notesRoutes);
 
 app.get('/', (req, res) => {
@@ -30,18 +28,27 @@ app.get('/', (req, res) => {
   });
 });
 
-// ========== 404 HANDLER ==========
+// 404 HANDLER
 app.use(notFoundHandler);
 
-// ========== CELEBRATE ERRORS ==========
-app.use(errors());  
+// CELEBRATE ERRORS
+app.use(errors());
 
-// ========== CUSTOM ERROR HANDLER ==========
+// CUSTOM ERROR HANDLER
 app.use(errorHandler);
 
-// ========== START SERVER ==========
-await connectMongoDB();
+// START SERVER
+const startServer = async () => {
+  try {
+    await connectMongoDB();
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error("Failed to start server:", err);
+    process.exit(1);
+  }
+};
+
+startServer();
