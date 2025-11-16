@@ -3,7 +3,7 @@ import createHttpError from 'http-errors';
 
 // Отримати список усіх нотаток
 export const getAllNotes = async (req, res) => {
-  	// Отримуємо пара метри пагінації
+  	// Отримуємо параметри пагінації
   const { page = 1, perPage = 10, tag, search } = req.query;
 
   const skip = (page - 1) * perPage;

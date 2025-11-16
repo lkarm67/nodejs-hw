@@ -11,14 +11,14 @@ const objectIdValidator = (value, helpers) => {
 
 // ====== REUSABLE SCHEMA ======
 export const noteIdSchema = {
-    [Segments.Params]: Joi.object({
+    [Segments.PARAMS]: Joi.object({
         noteId: Joi.string().custom(objectIdValidator).required(),
     }),
 };
 
 // ===== QUERIES =====
 export const getAllNotesSchema = {
-    [Segments.Query]: Joi.object({
+    [Segments.QUERY]: Joi.object({
         page: Joi.number().integer().min(1).default(1),
         perPage: Joi.number().integer().min(5).max(20).default(10),
         tag: Joi.string().valid(...TAGS),
@@ -28,7 +28,7 @@ export const getAllNotesSchema = {
 
 // ===== CREATE =====
 export const createNoteSchema = {
-    [Segments.Body]: Joi.object({
+    [Segments.BODY]: Joi.object({
         title: Joi.string().trim().min(1).max(200).required(),
         content: Joi.string().trim().max(2000).empty(''),
         tag: Joi.string().valid(...TAGS),
@@ -38,7 +38,7 @@ export const createNoteSchema = {
 // ===== UPDATE =====
 export const updateNoteSchema = {
     ...noteIdSchema,
-    [Segments.Body]: Joi.object({
+    [Segments.BODY]: Joi.object({
         title: Joi.string().trim().min(1).max(200),
         content: Joi.string().trim().max(2000).empty(''),
         tag: Joi.string().valid(...TAGS),
