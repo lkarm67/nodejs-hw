@@ -8,6 +8,7 @@ import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import authRoutes from './routes/authRoutes.js';
 import notesRoutes from './routes/notesRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import { errors } from 'celebrate';
 import cookieParser from 'cookie-parser';
 
@@ -24,6 +25,7 @@ app.use(cookieParser());
 // ROUTES
 app.use(authRoutes);
 app.use(notesRoutes);
+app.use(userRoutes);
 
 app.get('/', (req, res) => {
   res.json({
