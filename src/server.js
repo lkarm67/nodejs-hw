@@ -11,6 +11,7 @@ import notesRoutes from './routes/notesRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import { errors } from 'celebrate';
 import cookieParser from 'cookie-parser';
+import testUploadRouter from './routes/testUploadRouter.js';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use(authRoutes);
 app.use(notesRoutes);
 app.use(userRoutes);
+app.use(testUploadRouter);
 
 app.get('/', (req, res) => {
   res.json({
