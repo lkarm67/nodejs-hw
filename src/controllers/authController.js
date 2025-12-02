@@ -31,6 +31,8 @@ export const registerUser = async (req, res, next) => {
 };
 
 export const loginUser = async (req, res, next) => {
+  console.log("LOGIN BODY:", req.body);
+
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
@@ -187,6 +189,6 @@ export const resetPassword = async (req, res, next) => {
 
 	// 5. Повертаємо успішну відповідь
   res.status(200).json({
-    message: 'Password reset successfully. Please log in again.',
+    message: 'Password reset email sent successfully',
   });
 };
