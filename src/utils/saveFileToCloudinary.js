@@ -16,7 +16,7 @@ console.log({
 */
 
 export async function saveFileToCloudinary(buffer) {
-  console.log("saveFileToCloudinary викликано");
+  //console.log("saveFileToCloudinary викликано");
 
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
@@ -36,7 +36,7 @@ export async function saveFileToCloudinary(buffer) {
     readable.push(null); // кінець потоку
 
     readable.pipe(uploadStream);
-    console.log("Пушу файл у Cloudinary, buffer.length =", buffer.length);
+    //console.log("Пушу файл у Cloudinary, buffer.length =", buffer.length);
 
   });
 }
