@@ -189,6 +189,6 @@ export const resetPassword = async (req, res, next) => {
 
 	// 5. Повертаємо успішну відповідь
   res.status(200).json({
-    message: 'Password reset email sent successfully',
+    message: 'Password has been reset successfully',
   });
 };
